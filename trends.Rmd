@@ -1,30 +1,45 @@
 ---
-title: "trends"
+title: "The NBA in Google Trends"
 author: "Philip Petersen"
 date: "29 november 2017"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE, tidy.opts=list(width.cutoff= 80))
 ```
 
-## R Markdown
+## The NBA
+This paper is about the NBA in Google Trends.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
-summary(cars)
+```{r packages, include=FALSE}
+library(gtrendsR)
+library(ggplot2)
+library(tidyverse)
 ```
 
-## Including Plots
+Firstly, I am downloading the dataset for the NBA inside the gtrend package. 
 
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
+```{r gtrend, include=FALSE}
+nba.trend <- gtrends(c("nba"), gprop = "web", time = "all")[[1]]
+class(nba.trend)
+head(nba.trend)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+Now I plot the data. 
+
+```{r plot, echo=FALSE}
+ggplot(data = nba.trend) + geom_line(mapping = aes(x= date, y = hits))
+```
+
+The number of hits over time is drastically decreasing and increasing. This is because there is a summer break in the NBA season. 
+
+Let's take a look at the number of hits over time after The Golden State Warriors won the championship in the summer of 2015. 
+
+```{r golden state, echo=FALSE}
+ggplot(data = nba.trend) + 
+  geom_line(mapping = aes(x= date, y = hits)) +
+  geom_vline(xintercept = as.Date("2015-06-20"), color = "red")
+```
+
+After the championship of The Golden State Warriors in the NBA season 2015, the number of hits in the NBA have increased. 
